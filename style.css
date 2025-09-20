@@ -1,0 +1,250 @@
+/* 기본 리셋 */
+* { box-sizing: border-box; margin:0; padding:0; }
+:root{
+  --bg:#111; --fg:#eee; --muted:#bbb; --panel:#2a2a2a; --panel-border:#252525; --header:#181818; --header-border:#222;
+  --primary:#ff7e5f; --primary-hover:#feb47b; --btn:#444; --btn-hover:#555; --footer:#666;
+  --time-bg:#2a2a2a; --time-border:#333; --overlay:rgba(20,20,20,.92);
+}
+:root.light{
+  --bg:#f7f7f9; --fg:#1a1a1a; --muted:#666; --panel:#d5d5d5; --panel-border:#d0d0d0; --header:#ffffff; --header-border:#e0e0e0;
+  --primary:#ff7e5f; --primary-hover:#feb47b; --btn:#f0f0f0; --btn-hover:#e0e0e0; --footer:#666;
+  --time-bg:#f5f5f5; --time-border:#ccc; --overlay:rgba(255,255,255,.9);
+}
+body { font-family: "Pretendard","Noto Sans KR",system-ui,sans-serif; background:var(--bg); color:var(--fg); min-height:100vh; display:flex; flex-direction:column; }
+
+h1,h2,h3 { font-weight:600; }
+button { cursor:pointer; font:inherit; }
+button:disabled { opacity:.5; cursor:not-allowed; }
+
+header { display:flex; justify-content:center; gap:4rem; padding:1rem 0; background:var(--header); border-bottom:1px solid var(--header-border); position:sticky; top:0; z-index:10; }
+/* 진행바 스타일 */
+.time-wrapper { display:flex; flex-direction:column; align-items:center; gap:.4rem; }
+#timeBar { width:220px; height:14px; background:var(--time-bg); border:1px solid var(--time-border); border-radius:999px; overflow:hidden; position:relative; }
+#timeBarInner { width:100%; height:100%; background:linear-gradient(90deg,#3ddc97,#1fbf72); transition:width .95s linear; }
+.time-label { font-size:.8rem; letter-spacing:.5px; color:var(--muted); }
+
+.status { font-size:1.1rem; }
+.hidden { display:none !important; }
+
+main { flex:1; width:100%; max-width:900px; margin:0 auto; padding:1.5rem 1rem 3rem; display:flex; flex-direction:column; align-items:center; }
+.screen { width:100%; display:flex; flex-direction:column; align-items:center; gap:1.25rem; }
+
+#startScreen h1 { 
+  font-size:3.2rem; 
+  font-weight:900; 
+  background:linear-gradient(45deg,#ff6b6b,#feca57,#48cae4,#ff9ff3,#54a0ff); 
+  background-size:300% 300%;
+  -webkit-background-clip:text; 
+  background-clip:text; 
+  color:transparent; 
+  animation:gradient-shift 3s ease-in-out infinite;
+  text-shadow:0 0 30px rgba(255,107,107,0.3);
+  letter-spacing:2px;
+  text-transform:uppercase;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  cursor: default;
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position:0% 50%; }
+  50% { background-position:100% 50%; }
+}
+
+/* 라이트 모드에서 제목 가시성 개선 */
+:root.light #startScreen h1 { 
+  background:linear-gradient(45deg,#e74c3c,#f39c12,#3498db,#9b59b6,#1abc9c); 
+  background-size:300% 300%;
+  -webkit-background-clip:text; 
+  background-clip:text; 
+  color:transparent; 
+  animation:gradient-shift 3s ease-in-out infinite;
+  text-shadow:0 0 30px rgba(231,76,60,0.4);
+}
+
+.primary { background:var(--primary); border:none; padding:.8rem 1.4rem; border-radius:.6rem; font-weight:600; color:#111; transition:.2s; }
+.primary:hover, .primary:focus { background:var(--primary-hover); outline:none; }
+#restartBtn { background:var(--btn); color:var(--fg); border:none; padding:.7rem 1.2rem; border-radius:.5rem; }
+#restartBtn:hover { background:var(--btn-hover); }
+
+#leaderboardContainer, .gameover-leaderboard { width:100%; max-width:420px; background:var(--panel); border:none; padding:1rem 1.2rem; border-radius:.75rem; box-shadow:0 2px 8px rgba(0,0,0,.2); }
+#leaderboardContainer h2, .gameover-leaderboard h3 { 
+  margin-bottom:.4rem; 
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  cursor: default;
+  text-align: center;
+}
+#leaderboardList, #leaderboardListGameOver { 
+  list-style:decimal inside; 
+  display:flex; 
+  flex-direction:column; 
+  gap:.25rem; 
+}
+#leaderboardList li, #leaderboardListGameOver li { 
+  font-size:.95rem; 
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  cursor: default;
+}
+
+/* 라이트 모드에서 리더보드 가시성 개선 - 제거됨 */
+
+#gridContainer { display:grid; gap:.6rem; margin-top:1rem; }
+.cell { 
+  width:70px; 
+  aspect-ratio:1/1; 
+  border-radius:40%; 
+  cursor:pointer; 
+  transition: transform .12s; 
+  box-shadow:none; 
+  border:none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.cell:hover { transform:scale(1.04); }
+.cell:active { transform:scale(.94); }
+
+/* 반응형 */
+@media (max-width:600px) {
+  #gridContainer { gap:.5rem; }
+  .cell { width:56px; }
+  header { gap:2.5rem; }
+  #timeBar { width:160px; }
+  #startScreen h1 { font-size:2.5rem; }
+}
+
+#gameOverScreen { text-align:center; }
+#nameInputWrapper { display:flex; gap:.5rem; justify-content:center; align-items:center; margin:1rem 0; }
+#nameInputWrapper input { background:var(--panel); border:1px solid var(--panel-border); color:var(--fg); padding:.55rem .75rem; border-radius:.5rem; width:140px; }
+#nameInputWrapper input:focus { outline:2px solid var(--primary); border-color:var(--primary); }
+
+.overlay-card { background:var(--overlay); border:1px solid var(--panel-border); padding:1.6rem 1.8rem 1.9rem; border-radius:1rem; width:100%; max-width:380px; box-shadow:0 8px 30px -8px rgba(0,0,0,.15); pointer-events:auto; animation:pop .35s ease; position:relative; }
+
+/* X 버튼 스타일 */
+.close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--muted);
+  cursor: pointer;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+  background: var(--btn);
+  color: var(--fg);
+}
+
+:root.light .close-btn:hover {
+  background: #c0c0c0;
+}
+
+.overlay-card h2 { margin-bottom:.5rem; }
+.overlay-card p { margin-bottom:1rem; font-size:1.1rem; }
+
+#restartBtn { 
+  background:var(--btn); 
+  color:var(--fg); 
+  border:none; 
+  padding:.8rem 1.5rem; 
+  border-radius:.5rem; 
+  margin:0.5rem 0;
+  font-size:1rem;
+}
+#restartBtn:hover { background:var(--btn-hover); }
+
+/* 라이트 모드에서 다시시작 버튼 가시성 개선 */
+:root.light #restartBtn { 
+  background:#d5d5d5; 
+  color:#1a1a1a;
+}
+:root.light #restartBtn:hover { 
+  background:#c0c0c0; 
+}
+
+.gameover-leaderboard { 
+  margin-top:1rem; 
+  max-height:200px;
+  overflow-y:auto;
+}
+
+.fade-in { animation:fade .4s ease; }
+@keyframes fade { from { opacity:0; transform:translateY(6px);} to { opacity:1; transform:none;} }
+
+/* 블러 및 오버레이 */
+.blur-active #gameArea { filter:blur(6px) brightness(.95); pointer-events:none; }
+.blur-active #topBar { filter:blur(4px) brightness(.95); }
+.overlay { position:fixed; inset:0; display:flex; justify-content:center; align-items:center; backdrop-filter:none; pointer-events:none; }
+.overlay-card { background:var(--overlay); border:1px solid var(--panel-border); padding:1.6rem 1.8rem 1.9rem; border-radius:1rem; width:100%; max-width:380px; box-shadow:0 8px 30px -8px rgba(0,0,0,.15); pointer-events:auto; animation:pop .35s ease; }
+@keyframes pop { 0%{ transform:translateY(14px) scale(.94); opacity:0;} 100%{ transform:translateY(0) scale(1); opacity:1;} }
+
+/* 카운트다운 중 게임 영역 비활성화 */
+.countdown-active #gameArea { 
+  pointer-events: none; 
+}
+.countdown-active .cell { 
+  cursor: default !important; 
+}
+.countdown-active .cell:hover { 
+  transform: none !important; 
+}
+.countdown-active .cell:active { 
+  transform: none !important; 
+}
+
+/* 카운트다운 */
+#countdownOverlay { position:fixed; inset:0; display:flex; justify-content:center; align-items:center; background:rgba(0,0,0,.3); pointer-events:none; }
+.countdown-text { 
+  font-size:6rem; 
+  font-weight:800; 
+  color:#fff; 
+  text-shadow:0 6px 24px rgba(0,0,0,.35); 
+  animation:count .9s ease infinite;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  pointer-events: none;
+}
+@keyframes count { 0%{ transform:scale(.9); opacity:.8;} 100%{ transform:scale(1); opacity:1;} }
+
+/* 테마 토글 버튼 */
+.theme-toggle{ 
+  position:fixed; 
+  right:14px; 
+  bottom:14px; 
+  z-index:20; 
+  background:var(--panel); 
+  color:var(--fg); 
+  border:none; 
+  padding:.5rem .75rem; 
+  border-radius:.6rem; 
+  box-shadow:0 4px 18px -8px rgba(0,0,0,.3); 
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.theme-toggle:hover{ filter:brightness(1.05); }
+
+/* 라이트 모드에서 테마 토글 버튼 가시성 개선 - 제거됨 */

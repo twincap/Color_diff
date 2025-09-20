@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>색 다른 프로젝트</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- 테마 토글 버튼 -->
+  <button id="themeToggle" class="theme-toggle" aria-label="테마 전환">☀ 라이트</button>
+  <header id="topBar" class="hidden">
+    <div class="status">라운드 <span id="roundDisplay">1</span></div>
+    <div class="status time-wrapper">
+      <span class="time-label">남은 시간</span>
+      <div id="timeBar" role="progressbar" aria-label="남은 시간" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+        <div id="timeBarInner"></div>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section id="startScreen" class="screen">
+      <h1>색 다른 프로젝트</h1>
+      <button id="startBtn" class="primary">게임 시작</button>
+      <div id="leaderboardContainer">
+        <h2>리더보드</h2>
+        <ol id="leaderboardList" aria-live="polite"></ol>
+      </div>
+    </section>
+
+    <section id="gameArea" class="screen hidden" aria-label="게임 영역">
+      <div id="gridContainer" role="grid" aria-label="색 구분 그리드"></div>
+    </section>
+
+    <section id="gameOverScreen" class="screen hidden overlay" aria-live="assertive">
+      <div class="overlay-card">
+        <button id="closeBtn" class="close-btn" aria-label="메인화면으로 돌아가기">×</button>
+        <h2>게임 종료</h2>
+        <p>도달 라운드: <span id="finalRound"></span></p>
+        <div id="nameInputWrapper">
+          <label for="playerName">이름</label>
+          <input id="playerName" type="text" maxlength="16" placeholder="이름 입력" />
+          <button id="saveScoreBtn" class="primary">기록 저장</button>
+        </div>
+        <button id="restartBtn">다시 시작</button>
+        <div class="gameover-leaderboard">
+          <h3>리더보드</h3>
+          <ol id="leaderboardListGameOver"></ol>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 카운트다운 오버레이 -->
+  <section id="countdownOverlay" class="overlay hidden" aria-hidden="true">
+    <div id="countdownText" class="countdown-text">3</div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
