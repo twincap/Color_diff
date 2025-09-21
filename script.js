@@ -92,7 +92,15 @@ function buildGrid(){
     div.className = 'cell';
     div.setAttribute('role','gridcell');
     div.style.background = (i === targetIndex) ? diffCss : baseCss;
-    div.addEventListener('click', () => handleCellClick(i === targetIndex));
+    div.addEventListener('click', (e) => {
+      // 클릭된 셀과 클릭 위치를 전역으로 저장
+      window.clickedCell = e.target;
+      window.clickPosition = {
+        x: e.offsetX,
+        y: e.offsetY
+      };
+      handleCellClick(i === targetIndex);
+    });
     gridContainer.appendChild(div);
   }
 }
@@ -100,11 +108,67 @@ function buildGrid(){
 function handleCellClick(correct){
   if(!playing || countdown) return; // 카운트다운 중에는 클릭 무시
   if(correct){
-    round++;
-    nextRound();
+    // 자연스러운 성공 효과
+    const clickedCell = window.clickedCell;
+    addSuccessEffect(clickedCell);
+    
+    // 효과 시간 후 다음 라운드
+    setTimeout(() => {
+      round++;
+      nextRound();
+    }, 500);
   } else {
     endGame();
   }
+}
+
+// 자연스러운 성공 효과
+function addSuccessEffect(cellElement) {
+  // 셀에 펄스 효과
+  cellElement.classList.add('correct-simple');
+  
+  // 클릭한 위치에서 3-4개의 흰색 별이 위로 떠오름
+  const clickPos = window.clickPosition || { x: 35, y: 35 }; // 기본값은 중앙
+  
+  const particleCount = 3 + Math.floor(Math.random() * 2); // 3-4개
+  
+  for (let i = 0; i < particleCount; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'success-particle';
+    
+    // 라이트 모드에서는 색깔 별, 다크 모드에서는 무채색 별
+    const isLightMode = document.documentElement.classList.contains('light');
+    const colorStars = ['🌟', '✨', '⭐', '💫'];
+    const monoStar = '★';
+    
+    particle.textContent = isLightMode ? 
+      colorStars[Math.floor(Math.random() * colorStars.length)] : 
+      monoStar;
+    
+    // 클릭한 위치 근처에서 약간씩 랜덤하게 배치
+    const offsetX = (Math.random() - 0.5) * 20; // -10px ~ 10px
+    const offsetY = (Math.random() - 0.5) * 10; // -5px ~ 5px
+    
+    particle.style.left = (clickPos.x + offsetX) + 'px';
+    particle.style.top = (clickPos.y + offsetY) + 'px';
+    
+    // 각각 약간 다른 타이밍으로 시작
+    particle.style.animationDelay = (i * 0.1) + 's';
+    
+    cellElement.appendChild(particle);
+    
+    // 1초 후 제거
+    setTimeout(() => {
+      if (particle.parentNode) {
+        particle.parentNode.removeChild(particle);
+      }
+    }, 1000 + (i * 100));
+  }
+  
+  // 셀 효과 정리
+  setTimeout(() => {
+    cellElement.classList.remove('correct-simple');
+  }, 500);
 }
 
 function updateTimeBar(){

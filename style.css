@@ -4,11 +4,13 @@
   --bg:#111; --fg:#eee; --muted:#bbb; --panel:#2a2a2a; --panel-border:#252525; --header:#181818; --header-border:#222;
   --primary:#ff7e5f; --primary-hover:#feb47b; --btn:#444; --btn-hover:#555; --footer:#666;
   --time-bg:#2a2a2a; --time-border:#333; --overlay:rgba(20,20,20,.92);
+  --particle-color:rgba(255, 255, 255, 0.9); --grid-container-bg:#2a2a2a; --grid-container-border:#333;
 }
 :root.light{
-  --bg:#f7f7f9; --fg:#1a1a1a; --muted:#666; --panel:#d5d5d5; --panel-border:#d0d0d0; --header:#ffffff; --header-border:#e0e0e0;
+  --bg:#f7f7f9; --fg:#1a1a1a; --muted:#666; --panel:#b8b8b8; --panel-border:#a8a8a8; --header:#ffffff; --header-border:#e0e0e0;
   --primary:#ff7e5f; --primary-hover:#feb47b; --btn:#f0f0f0; --btn-hover:#e0e0e0; --footer:#666;
   --time-bg:#f5f5f5; --time-border:#ccc; --overlay:rgba(255,255,255,.9);
+  --particle-color:rgba(0, 0, 0, 0.8); --grid-container-bg:#e0e0e0; --grid-container-border:#c0c0c0;
 }
 body { font-family: "Pretendard","Noto Sans KR",system-ui,sans-serif; background:var(--bg); color:var(--fg); min-height:100vh; display:flex; flex-direction:column; }
 
@@ -96,9 +98,19 @@ main { flex:1; width:100%; max-width:900px; margin:0 auto; padding:1.5rem 1rem 3
 
 /* 라이트 모드에서 리더보드 가시성 개선 - 제거됨 */
 
-#gridContainer { display:grid; gap:.6rem; margin-top:1rem; }
+#gridContainer { 
+  display:grid; 
+  gap:.6rem; 
+  margin-top:1rem;
+  background: var(--grid-container-bg);
+  border: 2px solid var(--grid-container-border);
+  border-radius: 20px;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
 .cell { 
   width:70px; 
+  height:70px;
   aspect-ratio:1/1; 
   border-radius:40%; 
   cursor:pointer; 
@@ -111,14 +123,64 @@ main { flex:1; width:100%; max-width:900px; margin:0 auto; padding:1.5rem 1rem 3
   -ms-user-select: none;
   outline: none;
   -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
 }
 .cell:hover { transform:scale(1.04); }
 .cell:active { transform:scale(.94); }
 
+/* 자연스러운 성공 효과 */
+.cell.correct-simple {
+  position: relative;
+  animation: correctPulse 0.5s ease-out;
+}
+
+.success-particle {
+  position: absolute;
+  color: var(--particle-color);
+  font-size: 1.2rem;
+  pointer-events: none;
+  z-index: 100;
+  animation: particleFloat 1s ease-out forwards;
+}
+
+@keyframes correctPulse {
+  0% { 
+    transform: scale(1);
+    box-shadow: 0 0 0 var(--particle-color);
+  }
+  50% { 
+    transform: scale(1.08);
+    box-shadow: 0 0 20px var(--particle-color);
+  }
+  100% { 
+    transform: scale(1);
+    box-shadow: 0 0 0 var(--particle-color);
+  }
+}
+
+@keyframes particleFloat {
+  0% {
+    transform: translateY(0px) scale(0);
+    opacity: 1;
+  }
+  20% {
+    transform: translateY(-10px) scale(1);
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(-30px) scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-50px) scale(0);
+    opacity: 0;
+  }
+}
+
 /* 반응형 */
 @media (max-width:600px) {
   #gridContainer { gap:.5rem; }
-  .cell { width:56px; }
+  .cell { width:56px; height:56px; }
   header { gap:2.5rem; }
   #timeBar { width:160px; }
   #startScreen h1 { font-size:2.5rem; }
